@@ -6,27 +6,29 @@
 namespace ImWindow
 {
 //SFF_BEGIN
-	ImwToolBar::ImwToolBar(int iHorizontalPriority, bool bAutoDeleted)
+	ImwToolBar::ImwToolBar(ImwWindowManager& manager, int iHorizontalPriority, bool bAutoDeleted)
+		: m_pManager(manager)
 	{
 		m_iHorizontalPriority = iHorizontalPriority;
 		m_bAutoDeleted = bAutoDeleted;
 
-		ImwWindowManager::GetInstance()->AddToolBar(this);
+		m_pManager.AddToolBar(this);
 	}
 
-	ImwToolBar::ImwToolBar(const ImwToolBar& oToolBar)
+	ImwToolBar::ImwToolBar(ImwWindowManager& manager, const ImwToolBar& oToolBar)
+		: m_pManager(manager)
 	{
 		m_iHorizontalPriority = oToolBar.m_iHorizontalPriority;
 	}
 
 	ImwToolBar::~ImwToolBar()
 	{
-		ImwWindowManager::GetInstance()->RemoveToolBar(this);
+		m_pManager.RemoveToolBar(this);
 	}
 
 	void ImwToolBar::Destroy()
 	{
-		ImwWindowManager::GetInstance()->DestroyToolBar(this);
+		m_pManager.DestroyToolBar(this);
 	}
 
 	int ImwToolBar::GetHorizontalPriority() const

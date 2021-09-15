@@ -73,10 +73,10 @@ void ImwWindowManagerDX11::InternalDestroy()
 	ImwSafeRelease( m_pDX11DeviceContext );
 }
 
-ImwPlatformWindow* ImwWindowManagerDX11::CreatePlatformWindow(EPlatformWindowType eType, ImwPlatformWindow* pParent)
+ImwPlatformWindow* ImwWindowManagerDX11::CreatePlatformWindow(ImwWindowManager& manager, EPlatformWindowType eType, ImwPlatformWindow* pParent)
 {
 	IM_ASSERT(m_pCurrentPlatformWindow == NULL);
-	ImwPlatformWindowDX11* pWindow = new ImwPlatformWindowDX11(eType, CanCreateMultipleWindow());
+	ImwPlatformWindowDX11* pWindow = new ImwPlatformWindowDX11(manager, eType, CanCreateMultipleWindow());
 	if (pWindow->Init(pParent))
 	{
 		return (ImwPlatformWindow*)pWindow;
@@ -87,7 +87,7 @@ ImwPlatformWindow* ImwWindowManagerDX11::CreatePlatformWindow(EPlatformWindowTyp
 		return NULL;
 	}
 }
-const float c_fIconSize = 20.f;
+const float c_fIconSize = 40.f;
 float ImwWindowManagerDX11::GetTitleBarHeight() const
 {
 	ImGuiContext* pContext = m_pMainPlatformWindow->GetContext();

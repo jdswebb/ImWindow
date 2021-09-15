@@ -11,8 +11,9 @@ namespace ImWindow
 	IMW_CUSTOM_IMPLEMENT_IMWWINDOW
 #endif //IMW_CUSTOM_IMPLEMENT_IMWWINDOW
 
-	ImwWindow::ImwWindow(EWindowMode eMode)
+	ImwWindow::ImwWindow(ImwWindowManager& manager, EWindowMode eMode)
 		: m_pTitle(NULL)
+        , m_pManager(manager)
 		, m_bClosable(true)
 		, m_eMode(eMode)
 		, m_bFillingSpace(false)
@@ -31,12 +32,12 @@ namespace ImWindow
 		while ((iNumber /= 10) > 0 && iIndex <= 10);
 		m_pId[iIndex] = '\0';
 
-		ImwWindowManager::GetInstance()->AddWindow(this);
+		m_pManager.AddWindow(this);
 	}
 
 	ImwWindow::~ImwWindow()
 	{
-		ImwWindowManager::GetInstance()->RemoveWindow(this);
+		m_pManager.RemoveWindow(this);
 		ImwSafeFree(m_pTitle);
 	}
 
@@ -80,7 +81,7 @@ namespace ImWindow
 
 	void ImwWindow::Destroy()
 	{
-		ImwWindowManager::GetInstance()->DestroyWindow(this);
+		m_pManager.DestroyWindow(this);
 	}
 
 	void ImwWindow::SetTitle(const char* pTitle)

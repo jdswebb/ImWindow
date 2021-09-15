@@ -24,8 +24,6 @@ namespace ImWindow
 		m_oRectSize = oRectSize;
 	}
 
-	ImwWindowManager* ImwWindowManager::s_pInstance = 0;
-
 	//////////////////////////////////////////////////////////////////////////
 
 	ImwWindowManager::Config::Config()
@@ -55,7 +53,6 @@ namespace ImWindow
 
 	ImwWindowManager::ImwWindowManager()
 	{
-		s_pInstance = this;
 		m_pMainTitle = NULL;
 		m_pMainPlatformWindow = NULL;
 		m_pDragPlatformWindow = NULL;
@@ -73,7 +70,6 @@ namespace ImWindow
 	ImwWindowManager::~ImwWindowManager()
 	{
 		Destroy();
-		s_pInstance = 0;
 		ImwSafeFree(m_pMainTitle);
 	}
 
@@ -91,14 +87,14 @@ namespace ImWindow
 		//io.Fonts->AddFontFromFileTTF( "res/DroidSans.ttf", 16 ) || io.Fonts->AddFontDefault();
 		//io.Fonts->AddFontFromFileTTF( "res/DroidSans-Bold.ttf", 16 ) || io.Fonts->AddFontDefault();
 
-		m_pMainPlatformWindow = CreatePlatformWindow(E_PLATFORM_WINDOW_TYPE_MAIN, NULL);
+		m_pMainPlatformWindow = CreatePlatformWindow(*this, E_PLATFORM_WINDOW_TYPE_MAIN, NULL);
 		if (NULL != m_pMainPlatformWindow)
 		{
 			m_pMainPlatformWindow->Show(true);
 
 			if (CanCreateMultipleWindow())
 			{
-				m_pDragPlatformWindow = CreatePlatformWindow(E_PLATFORM_WINDOW_TYPE_DRAG_PREVIEW, m_pMainPlatformWindow);
+				m_pDragPlatformWindow = CreatePlatformWindow(*this, E_PLATFORM_WINDOW_TYPE_DRAG_PREVIEW, m_pMainPlatformWindow);
 			}
 
 			return true;
@@ -440,7 +436,7 @@ namespace ImWindow
 			for (int iCurrent = 0; iCurrent < iPlatformWindowCount; ++iCurrent)
 			{
 				JsonStthm::JsonValue& oJsonPlatformWindow = oJsonPlatformWindows[iCurrent];
-				ImwPlatformWindow* pNewPlatformWindow = CreatePlatformWindow(E_PLATFORM_WINDOW_TYPE_SECONDARY, m_pMainPlatformWindow);
+				ImwPlatformWindow* pNewPlatformWindow = CreatePlatformWindow(*this, E_PLATFORM_WINDOW_TYPE_SECONDARY, m_pMainPlatformWindow);
 				m_lPlatformWindows.push_back(pNewPlatformWindow);
 				pNewPlatformWindow->Show(true);
 				if (!pNewPlatformWindow->Load(oJsonPlatformWindow, false))
@@ -518,11 +514,11 @@ namespace ImWindow
 	{
 	}
 
-	ImwPlatformWindow* ImwWindowManager::CreatePlatformWindow(EPlatformWindowType eType, ImwPlatformWindow* /*pParent*/)
+	ImwPlatformWindow* ImwWindowManager::CreatePlatformWindow(ImwWindowManager& manager, EPlatformWindowType eType, ImwPlatformWindow* /*pParent*/)
 	{
 		if (eType == E_PLATFORM_WINDOW_TYPE_MAIN)
 		{
-			return (ImWindow::ImwPlatformWindow*)new ImwPlatformWindow(eType, CanCreateMultipleWindow());
+			return (ImWindow::ImwPlatformWindow*)new ImwPlatformWindow(manager, eType, CanCreateMultipleWindow());
 		}
 		return NULL;
 	}
@@ -1501,7 +1497,7 @@ void ImwWindowManager::AddStatusBar(ImwStatusBar* pStatusBar)
 
 	void ImwWindowManager::InternalFloat(ImwWindow* pWindow, ImVec2 oPosition, ImVec2 oSize)
 	{
-		ImwPlatformWindow* pPlatformWindow = CreatePlatformWindow(E_PLATFORM_WINDOW_TYPE_SECONDARY, m_pMainPlatformWindow);
+		ImwPlatformWindow* pPlatformWindow = CreatePlatformWindow(*this, E_PLATFORM_WINDOW_TYPE_SECONDARY, m_pMainPlatformWindow);
 		if (NULL != pPlatformWindow)
 		{
 			m_lPlatformWindows.push_back(pPlatformWindow);
@@ -1583,12 +1579,6 @@ void ImwWindowManager::AddStatusBar(ImwStatusBar* pStatusBar)
 		bool bRet = ImGui::BeginChild(pName, oSize, bBorder, iFlags);
 		oStyle.Colors[ImGuiCol_ChildBg] = oBackupChildWindowBg;
 		return bRet;
-	}
-
-	// Static
-	ImwWindowManager* ImwWindowManager::GetInstance()
-	{
-		return s_pInstance;
 	}
 
 	void ImwWindowManager::RegenFontTexture()

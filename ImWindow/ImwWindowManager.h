@@ -150,7 +150,7 @@ namespace ImWindow
 		virtual bool						CanCreateMultipleWindow();
 		virtual bool						InternalInit();
 		virtual void						InternalDestroy();
-		virtual ImwPlatformWindow*			CreatePlatformWindow(EPlatformWindowType eType, ImwPlatformWindow* pParent);
+		virtual ImwPlatformWindow*			CreatePlatformWindow(ImwWindowManager& manager, EPlatformWindowType eType, ImwPlatformWindow* pParent);
 		virtual ImVec2						GetCursorPos();
 		virtual bool						IsLeftClickDown();
 		virtual void						PreRender();
@@ -244,12 +244,6 @@ namespace ImWindow
 
 		bool								m_bHasWantCaptureKeyboard;
 		bool								m_bHasWantCaptureMouse;
-
-		// Static
-	public:
-		static ImwWindowManager*			GetInstance();
-	protected:
-		static ImwWindowManager*			s_pInstance;
 	};
 //SFF_END
 }

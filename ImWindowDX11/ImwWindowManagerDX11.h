@@ -26,7 +26,7 @@ namespace ImWindow
 		virtual bool					InternalInit();
 		virtual void					InternalDestroy();
 		virtual bool					CanCreateMultipleWindow() { return true; }
-		virtual ImwPlatformWindow*		CreatePlatformWindow(EPlatformWindowType eType, ImwPlatformWindow* pParent);
+		virtual ImwPlatformWindow*		CreatePlatformWindow(ImwWindowManager& manager, EPlatformWindowType eType, ImwPlatformWindow* pParent);
 
 		virtual float					GetTitleBarHeight() const;
 		virtual void					PaintTitleBar(ImwPlatformWindow* pPlatformWindow, bool bDrawTitle);

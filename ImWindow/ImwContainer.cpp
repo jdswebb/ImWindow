@@ -41,7 +41,7 @@ namespace ImWindow
 
 	ImwContainer::~ImwContainer()
 	{
-		ImwWindowManager* pWindowManager = ImwWindowManager::GetInstance();
+		ImwWindowManager* pWindowManager = &m_pParentWindow->GetManager();
 
 		if (m_pSpecialWindow != NULL)
 		{
@@ -442,7 +442,7 @@ namespace ImWindow
 
 	void ImwContainer::Paint(/* int iX, int iY, int iWidth, int iHeight */)
 	{
-		ImwWindowManager* pWindowManager = ImwWindowManager::GetInstance();
+		ImwWindowManager* pWindowManager = &m_pParentWindow->GetManager();
 		ImGuiWindow* pWindow = ImGui::GetCurrentWindow();
 		ImGuiStyle& oStyle = ImGui::GetStyle();
 		ImDrawList* pDrawList = ImGui::GetWindowDrawList();
@@ -898,7 +898,7 @@ namespace ImWindow
 
 	void ImwContainer::DrawTab(const char* pText, bool bFocused, ImVec2 oPos, float fStartLinePos, float fEndLinePos, const ImVec2& oTabSize, const ImVec2* pTextSize)
 	{
-		const ImwWindowManager::Config& oConfig = ImwWindowManager::GetInstance()->GetConfig();
+		const ImwWindowManager::Config& oConfig = m_pParentWindow->GetManager().GetConfig();
 		ImDrawList* pDrawList = ImGui::GetWindowDrawList();
 		const ImGuiStyle& oStyle = ImGui::GetStyle();
 
@@ -1068,7 +1068,7 @@ namespace ImWindow
 
 	const ImwContainer* ImwContainer::GetBestDocking(const ImVec2 oCursorPos, EDockOrientation& oOutOrientation, ImVec2& oOutAreaPos, ImVec2& oOutAreaSize, bool* pOutOnTabArea, int* pOutPosition, bool bLargeCheck) const
 	{
-		ImwWindowManager* pWindowManager = ImwWindowManager::GetInstance();
+		ImwWindowManager* pWindowManager = &m_pParentWindow->GetManager();
 
 		if (m_pParent == NULL ||
 			(oCursorPos.x >= m_oLastPosition.x && oCursorPos.x <= (m_oLastPosition.x + m_oLastSize.x) &&
@@ -1304,7 +1304,7 @@ namespace ImWindow
 
 		if (m_lWindows.size() > 0)
 		{
-			ImwWindowManager* pWindowManager = ImwWindowManager::GetInstance();
+			ImwWindowManager* pWindowManager = &m_pParentWindow->GetManager();
 			oJson["CurrentWindow"] = (int64_t)m_iActiveWindow;
 			JsonStthm::JsonValue& oJsonWindows = oJson["Windows"];
 			int iCurrentWindow = 0;
@@ -1334,7 +1334,7 @@ namespace ImWindow
 		if (!(oJson["Windows"].IsArray() || (oJson["Splits"].IsArray() && oJson["Splits"].GetMemberCount() == 2)))
 			return false;
 
-		ImwWindowManager* pWindowManager = ImwWindowManager::GetInstance();
+		ImwWindowManager* pWindowManager = &m_pParentWindow->GetManager();
 
 		if (!bJustCheck)
 		{

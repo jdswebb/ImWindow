@@ -6,12 +6,15 @@
 
 namespace ImWindow
 {
+
+class ImwWindowManager;
+
 //SFF_BEGIN
 	class IMGUI_API ImwToolBar
 	{
 	public:
-		ImwToolBar(int iHorizontalPriority = 0, bool bAutoDeleted = true);
-		ImwToolBar(const ImwToolBar& oToolBar);
+		ImwToolBar(ImwWindowManager& manager, int iHorizontalPriority = 0, bool bAutoDeleted = true);
+		ImwToolBar(ImwWindowManager& manager, const ImwToolBar& oToolBar);
 		virtual						~ImwToolBar();
 
 		void						Destroy();
@@ -20,7 +23,9 @@ namespace ImWindow
 
 		int							GetHorizontalPriority() const;
 		bool						IsAutoDeleted();
+		ImwWindowManager&			GetManager() const { return m_pManager; }
 	private:
+		ImwWindowManager&			m_pManager;
 		int							m_iHorizontalPriority;
 		bool						m_bAutoDeleted;
 	};

@@ -23,7 +23,8 @@ static inline ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return Im
 class StyleEditorWindow : public ImwWindow
 {
 public:
-	StyleEditorWindow()
+	StyleEditorWindow(ImwWindowManager& manager)
+		: ImwWindow(manager)
 	{
 		SetTitle("Style Editor");
 	}
@@ -33,7 +34,7 @@ public:
 
 		ImGuiStyle& style = ImGui::GetStyle();
 
-		ImwWindowManager::Config& oConfig = ImwWindowManager::GetInstance()->GetConfig();
+		ImwWindowManager::Config& oConfig = GetManager().GetConfig();
 
 		ImGui::Checkbox("Visible dragger", &oConfig.m_bVisibleDragger);
 		ImGui::Text("Tab color mode");
@@ -455,7 +456,8 @@ public:
 class NodeWindow : public ImWindow::ImwWindow
 {
 public:
-	NodeWindow(void)
+	NodeWindow(ImwWindowManager& manager)
+		: ImWindow::ImwWindow(manager)
 	{
 		SetTitle("Node editor");
 	}
@@ -669,7 +671,8 @@ public:
 class MyStatusBar : public ImwStatusBar
 {
 public:
-	MyStatusBar()
+	MyStatusBar(ImwWindowManager& manager)
+		: ImwStatusBar(manager)
 	{
 		m_fTime = 0.f;
 	}
@@ -690,13 +693,18 @@ public:
 class MyToolBar : public ImwToolBar
 {
 public:
+	MyToolBar(ImwWindowManager& manager)
+        : ImwToolBar(manager)
+    {
+    }
+
 	virtual void OnToolBar()
 	{
 		ImGui::Text("My tool bar");
 		ImGui::SameLine();
 		if (ImGui::SmallButton("Open Node window"))
 		{
-			new NodeWindow();
+			new NodeWindow(GetManager());
 		}
 	}
 };
@@ -704,8 +712,8 @@ public:
 class MyMenu : public ImwMenu
 {
 public:
-	MyMenu()
-		: ImwMenu(-1)
+	MyMenu(ImwWindowManager& manager)
+		: ImwMenu(manager, -1)
 	{
 	}
 
@@ -713,16 +721,16 @@ public:
 	{
 		if (ImGui::BeginMenu("My menu"))
 		{
-			if (ImGui::MenuItem("Show content", NULL, ImWindow::ImwWindowManager::GetInstance()->GetMainPlatformWindow()->IsShowContent()))
+			if (ImGui::MenuItem("Show content", NULL, GetManager().GetMainPlatformWindow()->IsShowContent()))
 			{
-				ImWindow::ImwWindowManager::GetInstance()->GetMainPlatformWindow()->SetShowContent(!ImWindow::ImwWindowManager::GetInstance()->GetMainPlatformWindow()->IsShowContent());
+				GetManager().GetMainPlatformWindow()->SetShowContent(!GetManager().GetMainPlatformWindow()->IsShowContent());
 			}
 
 			ImGui::Separator();
 
 			if (ImGui::MenuItem("Exit"))
 			{
-				ImWindow::ImwWindowManager::GetInstance()->Destroy();
+				GetManager().Destroy();
 			}
 
 			ImGui::EndMenu();
@@ -733,7 +741,8 @@ public:
 class MyImwWindow3 : public ImwWindow
 {
 public:
-	MyImwWindow3(const char* pTitle = "MyImwWindow3")
+	MyImwWindow3(ImwWindowManager& manager, const char* pTitle = "MyImwWindow3")
+		: ImwWindow(manager)
 	{
 		SetTitle(pTitle);
 	}
@@ -757,8 +766,7 @@ public:
 			Destroy();
 		}
 
-		ImwWindowManager* pManager = ImwWindowManager::GetInstance();
-		if (pManager->GetFocusedPlatformWindow() == pManager->GetCurrentPlatformWindow())
+		if (GetManager().GetFocusedPlatformWindow() == GetManager().GetCurrentPlatformWindow())
 			ImGui::Text("Platform Window is focused");
 		else
 			ImGui::TextDisabled("Platform Window is not focused");
@@ -768,7 +776,8 @@ public:
 class MyImwWindow2 : public ImwWindow
 {
 public:
-	MyImwWindow2(const char* pTitle = "MyImwWindow2")
+	MyImwWindow2(ImwWindowManager& manager, const char* pTitle = "MyImwWindow2")
+		: ImwWindow(manager)
 	{
 		SetTitle(pTitle);
 	}
@@ -783,7 +792,8 @@ public:
 class MyImwWindowFillSpace : public ImwWindow
 {
 public:
-	MyImwWindowFillSpace()
+    MyImwWindowFillSpace(ImwWindowManager& manager)
+        : ImwWindow(manager)
 	{
 		SetTitle("Filling space");
 		SetFillingSpace(true);
@@ -799,9 +809,9 @@ public:
 class MyImwWindow : public ImwWindow, ImwMenu
 {
 public:
-	MyImwWindow(const char* pTitle = "MyImwWindow")
-		: ImwWindow(ImWindow::E_WINDOW_MODE_ALONE)
-		, ImwMenu(0, false)
+	MyImwWindow(ImwWindowManager& manager, const char* pTitle = "MyImwWindow")
+		: ImwWindow(manager, ImWindow::E_WINDOW_MODE_ALONE)
+		, ImwMenu(manager, 0, false)
 	{
 		SetTitle(pTitle);
 		m_pText[0] = 0;
@@ -812,7 +822,7 @@ public:
 
 		if (ImGui::Button("Create new MyImwWindow3"))
 		{
-			new MyImwWindow3();
+			new MyImwWindow3(ImwWindow::GetManager());
 		}
 
 		ImGui::InputText("Input", m_pText, 512);
@@ -824,7 +834,7 @@ public:
 	{
 		if (ImGui::MenuItem("Focus"))
 		{
-			ImwWindowManager::GetInstance()->FocusWindow(this);
+			ImwMenu::GetManager().FocusWindow(this);
 		}
 	}
 
@@ -834,7 +844,7 @@ public:
 		{
 			if (ImGui::MenuItem("Create new MyImwWindow3"))
 			{
-				new MyImwWindow3();
+				new MyImwWindow3(ImwMenu::GetManager());
 			}
 			ImGui::EndMenu();
 		}
@@ -846,8 +856,8 @@ public:
 class PlaceholderWindow : public ImWindow::ImwWindow
 {
 public:
-	PlaceholderWindow()
-		: ImwWindow(ImWindow::E_WINDOW_MODE_PLACEHOLDER)
+	PlaceholderWindow(ImwWindowManager& manager)
+		: ImwWindow(manager, ImWindow::E_WINDOW_MODE_PLACEHOLDER)
 	{
 	}
 
@@ -863,9 +873,8 @@ void PreInitSample()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 }
 
-void InitSample()
+void InitSample(ImWindow::ImwWindowManager& oMgr)
 {
-	ImWindow::ImwWindowManager& oMgr = *ImWindow::ImwWindowManager::GetInstance();
 	ImGuiStyle& style = ImGui::GetStyle();
 
 	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.095f, 0.095f, 0.095f, 1.f);
@@ -875,21 +884,21 @@ void InitSample()
 	//oMgr.GetMainPlatformWindow()->SetPos(2000,100);
 	oMgr.SetMainTitle("ImWindow sample");
 
-	ImwWindow* pWindowPlaceholder = new PlaceholderWindow();
+	ImwWindow* pWindowPlaceholder = new PlaceholderWindow(oMgr);
 
-	ImwWindow* pWindow1 = new MyImwWindow();
+	ImwWindow* pWindow1 = new MyImwWindow(oMgr);
 
-	ImwWindow* pWindow2 = new MyImwWindowFillSpace();
+	ImwWindow* pWindow2 = new MyImwWindowFillSpace(oMgr);
 
-	ImwWindow* pWindow3 = new MyImwWindow2("MyImwWindow2(1)");
-	ImwWindow* pWindow4 = new MyImwWindow2("MyImwWindow2(2)");
-	ImwWindow* pWindow5 = new MyImwWindow3();
+	ImwWindow* pWindow3 = new MyImwWindow2(oMgr, "MyImwWindow2(1)");
+	ImwWindow* pWindow4 = new MyImwWindow2(oMgr, "MyImwWindow2(2)");
+	ImwWindow* pWindow5 = new MyImwWindow3(oMgr);
 	pWindow5->SetClosable(false);
 
-	ImwWindow* pStyleEditor = new StyleEditorWindow();
-	new MyMenu();
-	new MyStatusBar();
-	new MyToolBar();
+	ImwWindow* pStyleEditor = new StyleEditorWindow(oMgr);
+	new MyMenu(oMgr);
+	new MyStatusBar(oMgr);
+	new MyToolBar(oMgr);
 
 	oMgr.Dock(pWindow1);
 	oMgr.Dock(pWindow2, E_DOCK_ORIENTATION_LEFT);

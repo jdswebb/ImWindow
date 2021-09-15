@@ -8,6 +8,7 @@
 
 namespace ImWindow
 {
+
 //SFF_BEGIN
 	enum EPlatformWindowType
 	{
@@ -21,7 +22,7 @@ namespace ImWindow
 	{
 		friend class ImwWindowManager;
 	public:
-											ImwPlatformWindow(EPlatformWindowType eType, bool bCreateContext);
+											ImwPlatformWindow(ImwWindowManager& manager, EPlatformWindowType eType, bool bCreateContext);
 		virtual								~ImwPlatformWindow();
 
 		virtual bool						Init(ImwPlatformWindow* pParent);
@@ -48,6 +49,7 @@ namespace ImWindow
 		void								Dock(ImwWindow* pWindow);
 		bool								UnDock(ImwWindow* pWindow);
 
+		ImwWindowManager&                   GetManager() const { return m_pManager;}
 		ImwContainer*						GetContainer();
 		ImwWindow*							GetWindowAtPos(const ImVec2& oPos) const;
 		const ImwContainer*					HasWindow(ImwWindow* pWindow);
@@ -78,7 +80,7 @@ namespace ImWindow
 		bool								Save(JsonStthm::JsonValue& oJson);
 		bool								Load(const JsonStthm::JsonValue& oJson, bool bJustCheck);
 #endif //IMW_USE_LAYOUT_SERIALIZATION
-
+		ImwWindowManager&					m_pManager;
 		EPlatformWindowType					m_eType;
 		ImwContainer*						m_pContainer;
 		ImGuiContext*						m_pContext;

@@ -6,7 +6,8 @@
 namespace ImWindow
 {
 //SFF_BEGIN
-	ImwPlatformWindow::ImwPlatformWindow(EPlatformWindowType eType, bool bCreateContext)
+	ImwPlatformWindow::ImwPlatformWindow(ImwWindowManager& manager, EPlatformWindowType eType, bool bCreateContext)
+		: m_pManager(manager)
 	{
 		m_eType = eType;
 		m_pContainer = new ImwContainer(this);
@@ -152,20 +153,20 @@ namespace ImWindow
 			m_pContext = NULL;
 		}
 
-		if (ImwWindowManager::GetInstance() != NULL && ImwWindowManager::GetInstance()->m_pFocusedPlatformWindow == this)
-			ImwWindowManager::GetInstance()->m_pFocusedPlatformWindow = NULL;
+		if (m_pManager.m_pFocusedPlatformWindow == this)
+			m_pManager.m_pFocusedPlatformWindow = NULL;
 	}
 
 	void ImwPlatformWindow::OnFocus(bool bFocused)
 	{
 		if (bFocused)
 		{
-			ImwWindowManager::GetInstance()->m_pFocusedPlatformWindow = this;
+			m_pManager.m_pFocusedPlatformWindow = this;
 		}
 		else
 		{
-			if (ImwWindowManager::GetInstance()->m_pFocusedPlatformWindow == this)
-				ImwWindowManager::GetInstance()->m_pFocusedPlatformWindow = NULL;
+			if (m_pManager.m_pFocusedPlatformWindow == this)
+				m_pManager.m_pFocusedPlatformWindow = NULL;
 
 			if (NULL != m_pContext)
 			{
@@ -207,7 +208,7 @@ namespace ImWindow
 
 	void ImwPlatformWindow::OnClose()
 	{
-		ImwWindowManager::GetInstance()->OnClosePlatformWindow(this);
+		m_pManager.OnClosePlatformWindow(this);
 	}
 
 	void ImwPlatformWindow::OnDropFiles(int iCount, char** pFiles, const ImVec2& oPos)
@@ -221,7 +222,7 @@ namespace ImWindow
 
 	void ImwPlatformWindow::Moving(bool bFirst)
 	{
-		ImVec2 oCursorPos = ImwWindowManager::GetInstance()->GetCursorPos();
+		ImVec2 oCursorPos = m_pManager.GetCursorPos();
 		if (bFirst)
 		{
 			m_oMovingStartPos = oCursorPos;
@@ -392,7 +393,7 @@ namespace ImWindow
 
 	void ImwPlatformWindow::RefreshTitle()
 	{
-		const char* pMainTitle = ImwWindowManager::GetInstance()->GetMainTitle();
+		const char* pMainTitle = m_pManager.GetMainTitle();
 
 		ImwWindow* pActiveWindow = m_pContainer->GetActiveWindow();
 		const char* pActiveWindowTitle = NULL;

@@ -4,8 +4,8 @@
 
 using namespace ImWindow;
 
-ImwPlatformWindowEasyWindow::ImwPlatformWindowEasyWindow(EPlatformWindowType eType, bool bCreateState)
-	: ImwPlatformWindow(eType, bCreateState)
+ImwPlatformWindowEasyWindow::ImwPlatformWindowEasyWindow(ImwWindowManager& manager, EPlatformWindowType eType, bool bCreateState)
+	: ImwPlatformWindow(manager, eType, bCreateState)
 	, m_pWindow( NULL )
 {
 }
@@ -22,7 +22,7 @@ bool ImwPlatformWindowEasyWindow::Init(ImwPlatformWindow* pMain)
 
 	EasyWindow::EWindowStyle eStyle = EasyWindow::E_STYLE_NORMAL;
 
-	ImwWindowManager* pWindowManager = ImwWindowManager::GetInstance();
+	ImwWindowManager* pWindowManager = &m_pManager;
 	if (pWindowManager->IsUsingCustomFrame())
 		eStyle = EasyWindow::E_STYLE_BORDERLESS_RESIZABLE;
 
@@ -170,7 +170,7 @@ void ImwPlatformWindowEasyWindow::PreUpdate()
 
 void ImwPlatformWindowEasyWindow::OnOverlay()
 {
-	if (ImwWindowManager::GetInstance()->IsUsingCustomFrame())
+	if (m_pManager.IsUsingCustomFrame())
 	{
 		ImDrawList* pDrawList = ImGui::GetOverlayDrawList();
 		ImU32 iBorderColor = ImGui::GetColorU32(ImGuiCol_Border);

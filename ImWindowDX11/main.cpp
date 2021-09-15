@@ -7,10 +7,9 @@ int main()
 	PreInitSample();
 
 	ImwWindowManagerDX11 oMgr(true);
-
 	oMgr.Init();
 
-	InitSample();
+	InitSample(oMgr);
 
 	while (oMgr.Run(false) && oMgr.Run(true)) Sleep(16);
 

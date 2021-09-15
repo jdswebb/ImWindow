@@ -6,19 +6,25 @@
 
 namespace ImWindow
 {
+
+class ImwWindowManager;
+
 //SFF_BEGIN
 	class IMGUI_API ImwMenu
 	{
 	public:
-		ImwMenu(int iHorizontalPriority = 0, bool bAutoDeleted = true);
-		ImwMenu(const ImwMenu& oStatusBar);
+		ImwMenu(ImwWindowManager& manager, int iHorizontalPriority = 0, bool bAutoDeleted = true);
+		ImwMenu(ImwWindowManager& manager, const ImwMenu& oStatusBar);
 		virtual						~ImwMenu();
 
 		virtual void				OnMenu() = 0;
 
 		int							GetHorizontalPriority() const;
 		bool						IsAutoDeleted();
+		ImwWindowManager&			GetManager() const { return m_pManager; }
+
 	private:
+		ImwWindowManager&			m_pManager;
 		int							m_iHorizontalPriority;
 		bool						m_bAutoDeleted;
 	};

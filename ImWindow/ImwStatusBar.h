@@ -6,12 +6,15 @@
 
 namespace ImWindow
 {
+
+class ImwWindowManager;
+
 //SFF_BEGIN
 	class IMGUI_API ImwStatusBar
 	{
 	public:
-		ImwStatusBar(int iHorizontalPriority = 0, bool bAutoDeleted = true);
-		ImwStatusBar(const ImwStatusBar& oStatusBar);
+		ImwStatusBar(ImwWindowManager& manger, int iHorizontalPriority = 0, bool bAutoDeleted = true);
+		ImwStatusBar(ImwWindowManager& manager, const ImwStatusBar& oStatusBar);
 		virtual						~ImwStatusBar();
 
 		virtual void				OnStatusBar();
@@ -19,6 +22,7 @@ namespace ImWindow
 		int							GetHorizontalPriority() const;
 		bool						IsAutoDeleted();
 	private:
+		ImwWindowManager&			m_pManager;
 		int							m_iHorizontalPriority;
 		bool						m_bAutoDeleted;
 	};

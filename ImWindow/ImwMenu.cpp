@@ -6,22 +6,24 @@
 namespace ImWindow
 {
 //SFF_BEGIN
-	ImwMenu::ImwMenu(int iHorizontalPriority, bool bAutoDeleted)
+	ImwMenu::ImwMenu(ImwWindowManager& manager, int iHorizontalPriority, bool bAutoDeleted)
+		: m_pManager(manager)
 	{
 		m_iHorizontalPriority = iHorizontalPriority;
 		m_bAutoDeleted = bAutoDeleted;
 
-		ImwWindowManager::GetInstance()->AddMenu(this);
+		m_pManager.AddMenu(this);
 	}
 
-	ImwMenu::ImwMenu(const ImwMenu& oStatusBar)
+	ImwMenu::ImwMenu(ImwWindowManager& manager, const ImwMenu& oStatusBar)
+		: m_pManager(manager)
 	{
 		m_iHorizontalPriority = oStatusBar.m_iHorizontalPriority;
 	}
 
 	ImwMenu::~ImwMenu()
 	{
-		ImwWindowManager::GetInstance()->RemoveMenu(this);
+		m_pManager.RemoveMenu(this);
 	}
 
 	int ImwMenu::GetHorizontalPriority() const

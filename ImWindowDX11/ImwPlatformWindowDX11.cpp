@@ -125,8 +125,8 @@ static const char* c_pPixelShader = SHADER_SOURCE(
 
 using namespace ImWindow;
 
-ImwPlatformWindowDX11::ImwPlatformWindowDX11(EPlatformWindowType eType, bool bCreateState)
-	: ImwPlatformWindowEasyWindow(eType, bCreateState)
+ImwPlatformWindowDX11::ImwPlatformWindowDX11(ImwWindowManager& manager, EPlatformWindowType eType, bool bCreateState)
+	: ImwPlatformWindowEasyWindow(manager, eType, bCreateState)
 	, m_pDXGISwapChain(NULL)
 	, m_pDX11RenderTargetView(NULL)
 	// Shared
@@ -177,7 +177,7 @@ bool ImwPlatformWindowDX11::Init(ImwPlatformWindow* pMain)
 {
 	if (ImwPlatformWindowEasyWindow::Init(pMain))
 	{
-		ImwWindowManagerDX11* pWindowManagerDX11 = (ImwWindowManagerDX11*)ImWindow::ImwWindowManager::GetInstance();
+		ImwWindowManagerDX11* pWindowManagerDX11 = (ImwWindowManagerDX11*)&GetManager();
 
 		m_pDXGIFactory = pWindowManagerDX11->GetDXGIFactory();
 		m_pDX11Device = pWindowManagerDX11->GetDX11Device();

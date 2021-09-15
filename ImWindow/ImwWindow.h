@@ -38,7 +38,7 @@ namespace ImWindow
 		friend class ImwWindowManager;
 		friend class ImwContainer;
 	protected:
-		ImwWindow(EWindowMode eMode = E_WINDOW_MODE_NORMAL);
+		ImwWindow(ImwWindowManager& manager, EWindowMode eMode = E_WINDOW_MODE_NORMAL);
 		virtual					~ImwWindow();
 	public:
 		virtual void			OnGui() = 0;
@@ -68,6 +68,7 @@ namespace ImWindow
 
 		const ImVec2&			GetLastPosition() const;
 		const ImVec2&			GetLastSize() const;
+		ImwWindowManager&		GetManager() const { return m_pManager; }
 
 #ifdef IMW_CUSTOM_DECLARE_IMWWINDOW
 		IMW_CUSTOM_DECLARE_IMWWINDOW
@@ -78,6 +79,7 @@ namespace ImWindow
 		char					m_pId[11];
 		bool					m_bClosable;
 		EWindowMode				m_eMode;
+		ImwWindowManager&		m_pManager;
 		bool					m_bFillingSpace;
 		ImVec2					m_oLastPosition;
 		ImVec2					m_oLastSize;

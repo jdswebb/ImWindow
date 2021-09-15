@@ -25,7 +25,7 @@ namespace ImWindow
 	class ImwPlatformWindowDX11 : public ImwPlatformWindowEasyWindow
 	{
 	public:
-											ImwPlatformWindowDX11(EPlatformWindowType eType, bool bCreateState);
+											ImwPlatformWindowDX11(ImwWindowManager& manager, EPlatformWindowType eType, bool bCreateState);
 		virtual								~ImwPlatformWindowDX11();
 
 		virtual bool						Init(ImwPlatformWindow* pMain);
