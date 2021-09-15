@@ -65,7 +65,8 @@ bool ImwPlatformWindowEasyWindow::Init(ImwPlatformWindow* pMain)
 	io.KeyMap[ImGuiKey_Y] = EasyWindow::KEY_Y;
 	io.KeyMap[ImGuiKey_Z] = EasyWindow::KEY_Z;
 
-	io.ImeWindowHandle = m_pWindow->GetHandle();
+    ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+    main_viewport->PlatformHandle = main_viewport->PlatformHandleRaw = m_pWindow->GetHandle();
 
 	io.Fonts->AddFontDefault();
 	
@@ -172,7 +173,7 @@ void ImwPlatformWindowEasyWindow::OnOverlay()
 {
 	if (m_pManager.IsUsingCustomFrame())
 	{
-		ImDrawList* pDrawList = ImGui::GetOverlayDrawList();
+		ImDrawList* pDrawList = ImGui::GetForegroundDrawList();
 		ImU32 iBorderColor = ImGui::GetColorU32(ImGuiCol_Border);
 		pDrawList->AddRect(ImVec2(0.f, 0.f), GetSize(), iBorderColor);
 	}

@@ -1125,7 +1125,7 @@ namespace ImWindow
 		m_pCurrentPlatformWindow = pWindow;
 		pWindow->SetContext(true);
 
-		ImDrawList* pDrawList = ImGui::GetOverlayDrawList();
+		ImDrawList* pDrawList = ImGui::GetForegroundDrawList();
 		for (ImVector<DrawWindowAreaAction>::iterator it = m_lDrawWindowAreas.begin(); it != m_lDrawWindowAreas.end(); ++it)
 		{
 			DrawWindowAreaAction& oAction = *it;
